@@ -1,0 +1,31 @@
+name: Doomsday ticket monitor (free)
+
+on:
+  schedule:
+    # Once every five minutes; offset from top-of-hour to reduce congestion.
+    - cron: '3-58/5 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write  # Allows the workflow to disable itself after an alert/error.
+
+concurrency:
+  group: doomsday-ticket-monitor
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest  # Standard free hosted runner for PUBLIC repos only.
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Check public listing and send Telegram alert when found
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GH_TOKEN: ${{ github.token }}
+        run: python ticket_watch.py run

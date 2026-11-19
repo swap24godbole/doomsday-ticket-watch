@@ -1,0 +1,6 @@
+[project]
+name = "doomsday-ticket-watch"
+version = "0.1.0"
+description = "Free PVR Ambience Infinity Vision ICE 3D ticket-release checker"
+requires-python = ">=3.11"
+dependencies = []
